@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
 
-const initialItems = [
-  { id: 1, description: "Passports", quantity: 2, packed: true },
-  { id: 2, description: "Socks", quantity: 12, packed: false },
-];
+// const initialItems = [
+//   { id: 1, description: "Passports", quantity: 2, packed: true },
+//   { id: 2, description: "Socks", quantity: 12, packed: false },
+//   { id: 3, description: "condoms", quantity: 20, packed: false },
+// ];
 
 const quantities = Array.from({ length: 20 }, (_, i) => i + 1);
 
@@ -18,11 +19,23 @@ export default function App() {
     setItems(items.filter((item) => id != item.id));
   };
 
+  const handlePackItem = (id) => {
+    setItems((prevItems) =>
+      prevItems.map((item) =>
+        item.id === id ? { ...item, packed: !item.packed } : item
+      )
+    );
+  };
+
   return (
     <div className="app">
       <Logo />
       <Form onAddItems={handleAddItems} />
-      <PackingList items={items} onRemoveItem={handleRemoveItem} />
+      <PackingList
+        items={items}
+        onRemoveItem={handleRemoveItem}
+        onPackItem={handlePackItem}
+      />
       <Stats />
     </div>
   );
@@ -72,22 +85,38 @@ function Form({ onAddItems }) {
   );
 }
 
-function PackingList({ items, onRemoveItem }) {
+function PackingList({ items, onRemoveItem, onPackItem }) {
   return (
     <div className="list">
       <ul>
         {items.map((item) => (
-          <Item item={item} onRemoveItem={onRemoveItem} key={item.id} />
+          <Item
+            item={item}
+            onRemoveItem={onRemoveItem}
+            onPackItem={onPackItem}
+            key={item.id}
+          />
         ))}
       </ul>
     </div>
   );
 }
 
-function Item({ item, onRemoveItem }) {
+function Item({ item, onRemoveItem, onPackItem }) {
   return (
     <li>
-      <span style={item.packed ? { textDecoration: "line-through" } : {}}>
+      <input
+        type="checkbox"
+        checked={item.packed}
+        onChange={() => onPackItem(item.id)}
+      />
+      <span
+        style={
+          item.packed
+            ? { textDecoration: "line-through" }
+            : { textDecoration: "none" }
+        }
+      >
         {item.quantity} {item.description}
       </span>
       <button onClick={() => onRemoveItem(item.id)}>❌</button>
