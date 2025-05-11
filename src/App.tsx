@@ -36,13 +36,13 @@ export default function App() {
         onRemoveItem={handleRemoveItem}
         onPackItem={handlePackItem}
       />
-      <Stats />
+      <Stats items={items} />
     </div>
   );
 }
 
 function Logo() {
-  return <h1>🌴Far Away🛄</h1>;
+  return <h1>🌴 Far Away 💼</h1>;
 }
 
 function Form({ onAddItems }) {
@@ -63,7 +63,7 @@ function Form({ onAddItems }) {
 
   return (
     <form className="add-form" onSubmit={handleSubmit}>
-      <h3>What do you need for your 😍 trip?</h3>
+      <h3>🚀 What do you need for your trip? 😍</h3>
       <select
         value={quantity}
         onChange={(e) => setQuantity(Number(e.target.value))}
@@ -124,10 +124,27 @@ function Item({ item, onRemoveItem, onPackItem }) {
   );
 }
 
-function Stats() {
+function Stats({ items }) {
+  if (!items.length) {
+    return (
+      <footer className="stats">
+        <em>Start adding some items to you packing list 🚀</em>
+      </footer>
+    );
+  }
+  const numItems = items.length;
+  const numPacked = items.filter((item) => item.packed).length;
+  const percentage = Math.round((numPacked / numItems) * 100);
+
   return (
     <footer className="stats">
-      <em>🛄You have X items on your list, and you already packed X (X%)</em>
+      <em>
+        {percentage === 100
+          ? "You have everything set! Good trip! 🛫"
+          : `💼 You have ${numItems} items on your list, and you already packed ${
+              numPacked + " "
+            } (${percentage}%)`}
+      </em>
     </footer>
   );
 }
